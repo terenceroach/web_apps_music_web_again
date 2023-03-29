@@ -1,6 +1,22 @@
 from playwright.sync_api import Page, expect
-
+from lib.database_connection import DatabaseConnection
 # Tests for your routes go here
+
+"""
+GET /albums
+Returns albums
+"""
+def test_get_albums(page, test_web_address, db_connection):
+    db_connection.seed("seeds/music_web_app.sql")
+    page.goto(f"http://{test_web_address}/albums")
+    div_tags = page.locator("div")
+    # p_tag = page.locator("p")
+    
+    expect(div_tags).to_have_text([
+        "Title: Invisible Cities\nReleased: 1990",
+        "Title: The Man Who Was Thursday\nReleased: 2004",
+        "Title: Bluets\nReleased: 1999",
+        "Title: No Place on Earth\nReleased: 2016"])
 
 # === Example Code Below ===
 

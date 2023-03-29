@@ -1,11 +1,18 @@
 import os
+from lib.database_connection import get_flask_database_connection
 from flask import Flask, request, render_template
+from lib.album_repository import AlbumRepository
 
 # Create a new Flask app
 app = Flask(__name__)
 
 # == Your Routes Here ==
-
+@app.route('/albums', methods=['GET'])
+def get_albums():
+    connection = get_flask_database_connection()
+    repository = AlbumRepository(connection)
+    albums = repository.all()
+    return render_template('albums.html', albums=albums)
 
 # == Example Code Below ==
 
@@ -22,8 +29,8 @@ def get_emoji():
 
 # This imports some more example routes for you to see how they work
 # You can delete these lines if you don't need them.
-from example_routes import apply_example_routes
-apply_example_routes(app)
+# from example_routes import apply_example_routes
+# apply_example_routes(app)
 
 # == End Example Code ==
 
