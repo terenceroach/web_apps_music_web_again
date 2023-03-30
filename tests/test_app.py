@@ -9,14 +9,62 @@ Returns albums
 def test_get_albums(page, test_web_address, db_connection):
     db_connection.seed("seeds/music_web_app.sql")
     page.goto(f"http://{test_web_address}/albums")
+    h2_tags = page.locator("h2")
+    p_tags = page.locator("p")
     div_tags = page.locator("div")
-    # p_tag = page.locator("p")
     
-    expect(div_tags).to_have_text([
-        "Title: Invisible Cities\nReleased: 1990",
-        "Title: The Man Who Was Thursday\nReleased: 2004",
-        "Title: Bluets\nReleased: 1999",
-        "Title: No Place on Earth\nReleased: 2016"])
+    
+    expect(h2_tags).to_have_text([
+        "Title: Doolittle",
+        "Title: Surfer Rosa",
+        "Title: Waterloo",
+        "Title: Super Trouper",
+        "Title: Bossanova",
+        "Title: Lover",
+        "Title: Folklore",
+        "Title: I Put a Spell on You",
+        "Title: Baltimore",
+        "Title: Here Comes the Sun",
+        "Title: Fodder on My Wings",
+        "Title: Ring Ring"
+        ])
+    
+    expect(p_tags).to_have_text([
+        "Released: 1989",
+        "Released: 1988",
+        "Released: 1974",
+        "Released: 1980",
+        "Released: 1990",
+        "Released: 2019",
+        "Released: 2020",
+        "Released: 1965",
+        "Released: 1978",
+        "Released: 1971",
+        "Released: 1982",
+        "Released: 1973"]
+        )
+    
+"""
+GET /album
+Return 1 album with a given id
+"""
+def test_get_album(page, test_web_address, db_connection):
+    db_connection.seed("seeds/music_web_app.sql")
+    page.goto(f"http://{test_web_address}/albums/1")
+    p_tag = page.locator("p")
+
+    expect(p_tag).to_have_text(["Release year: 1989\nArtist: Pixies"])
+
+"""
+GET albums/<id>
+Return the information about the album corresponding to id
+"""
+def test_visit_album_page(page, test_web_address, db_connection):
+    db_connection.seed("seeds/music_web_app.sql")
+    page.goto(f"http://{test_web_address}/albums")
+    page.click("text='Waterloo'")
+    h1_tag = page.locator("h1")
+    expect(h1_tag).to_have_text("Waterloo")
 
 # === Example Code Below ===
 

@@ -14,6 +14,14 @@ def get_albums():
     albums = repository.all()
     return render_template('albums.html', albums=albums)
 
+@app.route('/albums/<id>')
+def get_album(id):
+    connection = get_flask_database_connection()
+    repository = AlbumRepository(connection)
+    album = repository.find_album_with_artist(id)
+    return render_template('album.html', album=album)
+
+
 # == Example Code Below ==
 
 # GET /emoji
