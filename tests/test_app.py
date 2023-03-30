@@ -11,8 +11,6 @@ def test_get_albums(page, test_web_address, db_connection):
     page.goto(f"http://{test_web_address}/albums")
     h2_tags = page.locator("h2")
     p_tags = page.locator("p")
-    div_tags = page.locator("div")
-    
     
     expect(h2_tags).to_have_text([
         "Title: Doolittle",
@@ -65,6 +63,49 @@ def test_visit_album_page(page, test_web_address, db_connection):
     page.click("text='Waterloo'")
     h1_tag = page.locator("h1")
     expect(h1_tag).to_have_text("Waterloo")
+
+"""
+GET artists/<id>
+Return details for a single artist
+"""
+def test_get_single_artist_details(page, test_web_address, db_connection):
+    db_connection.seed("seeds/music_web_app.sql")
+    page.goto(f"http://{test_web_address}/artists/1")
+    p_tag = page.locator("p")
+    expect(p_tag).to_have_text(["Name: Pixies\nGenre: Rock"])
+
+"""
+GET /artists
+Returns artists
+"""
+def test_get_artists_list(page, test_web_address, db_connection):
+    db_connection.seed("seeds/music_web_app.sql")
+    page.goto(f"http://{test_web_address}/artists")
+    h2_tags = page.locator("h2")
+    p_tags = page.locator("p")
+    expect(h2_tags).to_have_text([
+        "Name: Pixies",
+        "Name: ABBA",
+        "Name: Taylor Swift",
+        "Name: Nina Simone"
+        ])
+    expect(p_tags).to_have_text([
+        "Genre: Rock",
+        "Genre: Pop",
+        "Genre: Pop",
+        "Genre: Jazz"
+        ])
+    
+"""
+GET artists/<id>
+Return the information about the artist corresponding to id
+"""
+def test_visit_artist_page(page, test_web_address, db_connection):
+    db_connection.seed("seeds/music_web_app.sql")
+    page.goto(f"http://{test_web_address}/artists")
+    page.click("text='Taylor Swift'")
+    p_tag = page.locator("p")
+    expect(p_tag).to_have_text(["Name: Taylor Swift\nGenre: Pop"])
 
 # === Example Code Below ===
 
