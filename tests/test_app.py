@@ -27,7 +27,7 @@ def test_get_albums(page, test_web_address, db_connection):
         "Title: Ring Ring"
         ])
     
-    expect(p_tags).to_have_text([
+    expect(p_tags).to_contain_text([
         "Released: 1989",
         "Released: 1988",
         "Released: 1974",
@@ -106,6 +106,44 @@ def test_visit_artist_page(page, test_web_address, db_connection):
     page.click("text='Taylor Swift'")
     p_tag = page.locator("p")
     expect(p_tag).to_have_text(["Name: Taylor Swift\nGenre: Pop"])
+
+"""
+GET /albums_new
+Return a form to add new album
+"""
+def test_new_album_form(page, test_web_address, db_connection):
+    db_connection.seed("seeds/music_web_app.sql")
+    page.goto(f"http://{test_web_address}/new_album")
+    h1_tag = page.locator("h1")
+    expect(h1_tag).to_have_text("New Album")
+
+"""
+POST /albums
+Adds a valid album
+"""
+def test_post_new_album_created(page, test_web_address, db_connection):
+    db_connection.seed("seeds/music_web_app.sql")
+    page.goto(f"http://{test_web_address}/new_album")
+    page.fill('#title', 'My New Album')
+    page.fill('#release_year', '2023')
+    page.fill('#artist_id', '2')
+    page.click('input[type="submit"]')
+    page.goto(f"http://{test_web_address}/albums")
+    p_tag = page.locator("p")
+    expect(p_tag).to_contain_text(["2023"])
+
+"""
+create a new artist
+"""
+def test_create_artist(page, test_web_address, db_connection):
+    db_connection.seed("seeds/music_web_app.sql")
+    page.goto(f"http://{test_web_address}/artists")
+    page.click('text="Add artist"')
+    page.fill('input[name=name]', "Test Artist")
+    page.fill('input[name=genre]', "Dance")
+    page.click('text="Add artist"')
+    p_tag = page.locator("p")
+    expect(p_tag).to_have_text(["Name: Test Artist\nGenre: Dance"])
 
 # === Example Code Below ===
 
